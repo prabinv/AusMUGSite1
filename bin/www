@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+var debug = require('debug')('MEANSite1');
+var app = require('../server');
+var spawn = require('child_process').spawn;
+
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+var mongo = spawn('mongod');
+
+mongo.stdout.pipe(process.stdout);
+mongo.stderr.pipe(process.stderr);
+
+mongo.on('close', function() {
+  console.log('MongoDB process has exited.');
+});
